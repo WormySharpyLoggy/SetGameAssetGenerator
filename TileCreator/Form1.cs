@@ -209,7 +209,7 @@ namespace TileCreator
                                     tileGraphics.DrawImage(shapeImage, shapeLocations[shapeIndex]);
                                 }
 
-                                tileImage.Save(Path.Combine(keyPath, string.Format("{0}{1}{2}{3}.jpg", quantity, shape, color, shading)), ImageFormat.Jpeg);
+                                tileImage.Save(Path.Combine(keyPath, string.Format("{0}{1}{2}{3}.png", quantity, shape, color, shading)), ImageFormat.Png);
                             }
                         }
                     }
