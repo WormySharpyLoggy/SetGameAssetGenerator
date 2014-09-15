@@ -62,7 +62,7 @@ namespace TileCreator
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            folderBrowserDialog1.SelectedPath = Environment.CurrentDirectory;
         }
 
         private Bitmap GetShape(Size size, int iColor, int iShape, int iShading)
@@ -178,7 +178,7 @@ namespace TileCreator
             {
                 Size tileSize = tileSizes[key];
                 Size shapeSize = shapeSizes[key];
-                string keyPath = Path.Combine(folder, key);
+                string keyPath = Path.Combine(folder, "drawable-" + key);
                 Directory.CreateDirectory(keyPath);
 
 
@@ -211,7 +211,7 @@ namespace TileCreator
                                     tileGraphics.DrawImage(shapeImage, shapeLocations[shapeIndex]);
                                 }
 
-                                tileImage.Save(Path.Combine(keyPath, string.Format("{0}{1}{2}{3}.png", quantity, shape, color, shading)), ImageFormat.Png);
+                                tileImage.Save(Path.Combine(keyPath, string.Format("tile_{0}{1}{2}{3}.png", quantity, shape, color, shading)), ImageFormat.Png);
                             }
                         }
                     }
