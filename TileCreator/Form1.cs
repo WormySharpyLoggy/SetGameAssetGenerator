@@ -19,7 +19,9 @@ namespace TileCreator
             {"ldpi", new Size(240, 320)},
             {"mdpi", new Size(320, 470)},
             {"hdpi", new Size(720, 960)},
-            {"xhdpi", new Size(1440, 1920)}
+            {"xhdpi", new Size(1440, 1920)},
+            {"xxhdpi", new Size(2160, 2880)},
+            {"xxxhdpi", new Size(2880, 3840)}
         };
 
         Dictionary<string, Size> tileSizes = new Dictionary<string, Size>();
