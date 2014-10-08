@@ -185,6 +185,18 @@ namespace TileCreator
                 int betweenShapes = (int)(0.05 * shapeSize.Height);
                 int leftSpacing = (tileSize.Width - shapeSize.Width) / 2;
 
+                // Blank Tile
+                Bitmap tileImage = new Bitmap(tileSize.Width, tileSize.Height);
+                Graphics tileGraphics = Graphics.FromImage(tileImage);
+                tileGraphics.FillRectangle(Brushes.White, new Rectangle(0, 0, tileSize.Width, tileSize.Height));
+
+                for (int i = 0; i < tileSize.Width * 2 || i < tileSize.Height * 2; i += 10)
+                {
+                    tileGraphics.DrawLine(Pens.Gray, new Point(0, i), new Point(i, 0));
+                }
+                tileImage.Save(Path.Combine(keyPath, "tile_blank.png"), ImageFormat.Png);
+
+
                 for (int shape = 1; shape < 4; shape++)
                 {
                     for (int color = 1; color < 4; color++)
@@ -194,8 +206,8 @@ namespace TileCreator
                             Bitmap shapeImage = GetShape(shapeSize, color, shape, shading);
                             for (int quantity = 1; quantity < 4; quantity++)
                             {
-                                Bitmap tileImage = new Bitmap(tileSize.Width, tileSize.Height);
-                                Graphics tileGraphics = Graphics.FromImage(tileImage);
+                                tileImage = new Bitmap(tileSize.Width, tileSize.Height);
+                                tileGraphics = Graphics.FromImage(tileImage);
                                 tileGraphics.FillRectangle(Brushes.White, new Rectangle(0, 0, tileSize.Width, tileSize.Height));
 
                                 int topSpacing = (tileSize.Height - shapeSize.Height * quantity - betweenShapes * (quantity - 1)) / 2;
