@@ -188,12 +188,13 @@ namespace TileCreator
                 // Blank Tile
                 Bitmap tileImage = new Bitmap(tileSize.Width, tileSize.Height);
                 Graphics tileGraphics = Graphics.FromImage(tileImage);
+                tileGraphics.SmoothingMode = SmoothingMode.HighQuality;
                 tileGraphics.FillRectangle(Brushes.White, new Rectangle(0, 0, tileSize.Width, tileSize.Height));
 
-                for (int i = 0; i < tileSize.Width * 2 || i < tileSize.Height * 2; i += 10)
-                {
-                    tileGraphics.DrawLine(Pens.Gray, new Point(0, i), new Point(i, 0));
-                }
+                double diameter = tileSize.Width * 0.9 / 2;
+                double x = (tileSize.Width - diameter) / 2;
+                double y = (tileSize.Height - diameter) / 2;
+                tileGraphics.FillEllipse(Brushes.Gray, new RectangleF((float)x, (float)y, (float)diameter, (float)diameter));
                 tileImage.Save(Path.Combine(keyPath, "tile_blank.png"), ImageFormat.Png);
 
 
@@ -208,6 +209,7 @@ namespace TileCreator
                             {
                                 tileImage = new Bitmap(tileSize.Width, tileSize.Height);
                                 tileGraphics = Graphics.FromImage(tileImage);
+                                tileGraphics.SmoothingMode = SmoothingMode.HighQuality;
                                 tileGraphics.FillRectangle(Brushes.White, new Rectangle(0, 0, tileSize.Width, tileSize.Height));
 
                                 int topSpacing = (tileSize.Height - shapeSize.Height * quantity - betweenShapes * (quantity - 1)) / 2;
