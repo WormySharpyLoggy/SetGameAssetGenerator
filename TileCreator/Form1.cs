@@ -73,7 +73,7 @@ namespace TileCreator
             Size s = size;
             g.SmoothingMode = SmoothingMode.HighQuality;
             Color color = new Color[] { Color.Red, Color.Green, Color.Purple }[iColor - 1];
-            Pen pen = new Pen(new SolidBrush(color), Math.Max(2f, .02f * size.Height));
+            Pen pen = new Pen(new SolidBrush(color), .05f * size.Height);
             Region shapeRegion;
             GraphicsPath shapeBorder;
 
