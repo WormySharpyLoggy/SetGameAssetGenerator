@@ -15,6 +15,8 @@ namespace TileCreator
 {
     public partial class Form1 : Form
     {
+        const int SMALL_TILE_FACTOR = 4;
+
         Dictionary<string, Size> screenSizes = new Dictionary<string, Size>{
             {"ldpi", new Size(240, 320)},
             {"mdpi", new Size(320, 470)},
@@ -197,35 +199,59 @@ namespace TileCreator
                 tileGraphics.FillEllipse(Brushes.Gray, new RectangleF((float)x, (float)y, (float)diameter, (float)diameter));
                 tileImage.Save(Path.Combine(keyPath, "tile_blank.png"), ImageFormat.Png);
 
+                // Small Blank Tile
+                tileImage = new Bitmap(tileSize.Width / SMALL_TILE_FACTOR, tileSize.Height / SMALL_TILE_FACTOR);
+                tileGraphics = Graphics.FromImage(tileImage);
+                tileGraphics.SmoothingMode = SmoothingMode.HighQuality;
+                tileGraphics.FillRectangle(Brushes.White, new Rectangle(0, 0, tileImage.Width, tileImage.Height));
 
+                diameter = tileImage.Width * 0.9 / 2 / SMALL_TILE_FACTOR;
+                x = (tileImage.Width - diameter) / 2;
+                y = (tileImage.Height - diameter) / 2;
+                tileGraphics.FillEllipse(Brushes.Gray, new RectangleF((float)x, (float)y, (float)diameter, (float)diameter));
+                tileImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                tileImage.Save(Path.Combine(keyPath, "tile_small_blank.png"), ImageFormat.Png);
+
+                // Deck
                 for (int shape = 1; shape < 4; shape++)
                 {
                     for (int color = 1; color < 4; color++)
                     {
                         for (int shading = 1; shading < 4; shading++)
                         {
-                            Bitmap shapeImage = GetShape(shapeSize, color, shape, shading);
-                            for (int quantity = 1; quantity < 4; quantity++)
+                            for (int small = 0; small < 2; small++)
                             {
-                                tileImage = new Bitmap(tileSize.Width, tileSize.Height);
-                                tileGraphics = Graphics.FromImage(tileImage);
-                                tileGraphics.SmoothingMode = SmoothingMode.HighQuality;
-                                tileGraphics.FillRectangle(Brushes.White, new Rectangle(0, 0, tileSize.Width, tileSize.Height));
-
-                                int topSpacing = (tileSize.Height - shapeSize.Height * quantity - betweenShapes * (quantity - 1)) / 2;
-                                Point[] shapeLocations = new Point[quantity];
-                                shapeLocations[0] = new Point(leftSpacing, topSpacing);
-                                for (int i = 1; i < quantity; i++)
+                                // new sizing to take small into account
+                                int newLeftSpacing = small == 1 ? leftSpacing / SMALL_TILE_FACTOR : leftSpacing;
+                                int newShapeSpacing = small == 1 ? betweenShapes / SMALL_TILE_FACTOR : betweenShapes;
+                                Size newShapeSize = small == 1 ? new Size(shapeSize.Width / SMALL_TILE_FACTOR, shapeSize.Height / SMALL_TILE_FACTOR) : shapeSize;
+                                Size newTileSize = small == 1 ? new Size(tileSize.Width / SMALL_TILE_FACTOR, tileSize.Height / SMALL_TILE_FACTOR) : tileSize;
+                                Bitmap shapeImage = GetShape(newShapeSize, color, shape, shading);
+                                for (int quantity = 1; quantity < 4; quantity++)
                                 {
-                                    shapeLocations[i] = new Point(leftSpacing, shapeLocations[i - 1].Y + shapeSize.Height + betweenShapes);
-                                }
+                                    tileImage = new Bitmap(newTileSize.Width, newTileSize.Height);
+                                    tileGraphics = Graphics.FromImage(tileImage);
+                                    tileGraphics.SmoothingMode = SmoothingMode.HighQuality;
+                                    tileGraphics.FillRectangle(Brushes.White, new Rectangle(0, 0, tileImage.Width, tileImage.Height));
 
-                                for (int shapeIndex = 0; shapeIndex < quantity; shapeIndex++)
-                                {
-                                    tileGraphics.DrawImage(shapeImage, shapeLocations[shapeIndex]);
-                                }
+                                    int topSpacing = (tileImage.Height - shapeImage.Height * quantity - newShapeSpacing * (quantity - 1)) / 2;
+                                    Point[] shapeLocations = new Point[quantity];
+                                    shapeLocations[0] = new Point(newLeftSpacing, topSpacing);
+                                    for (int i = 1; i < quantity; i++)
+                                    {
+                                        shapeLocations[i] = new Point(newLeftSpacing, shapeLocations[i - 1].Y + shapeImage.Height + newShapeSpacing);
+                                    }
 
-                                tileImage.Save(Path.Combine(keyPath, string.Format("tile_{0}{1}{2}{3}.png", quantity, shape, color, shading)), ImageFormat.Png);
+                                    for (int shapeIndex = 0; shapeIndex < quantity; shapeIndex++)
+                                    {
+                                        tileGraphics.DrawImage(shapeImage, shapeLocations[shapeIndex]);
+                                    }
+
+                                    if (small == 1)
+                                        tileImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
+
+                                    tileImage.Save(Path.Combine(keyPath, string.Format("tile{4}_{0}{1}{2}{3}.png", quantity, shape, color, shading, small == 1 ? "_small" : "")), ImageFormat.Png);
+                                }
                             }
                         }
                     }
